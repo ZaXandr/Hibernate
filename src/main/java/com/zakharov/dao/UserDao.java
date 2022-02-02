@@ -1,16 +1,18 @@
-package org.example.dao;
+package com.zakharov.dao;
 
-import org.example.dmo.Cart;
+import com.zakharov.dmo.User;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
+
 
 import javax.persistence.TypedQuery;
 import java.util.List;
 
-public class CartDao {
-
+@Component
+public class UserDao {
     private SessionFactory sessionFactory;
 
     @Autowired
@@ -18,64 +20,71 @@ public class CartDao {
         this.sessionFactory = sessionFactory;
     }
 
-    public void save(Cart cart) {
-        try (Session session = this.sessionFactory.openSession()
-        ) {
+    public void save(User p) {
+        try(Session session = this.sessionFactory.openSession()) {
+
             Transaction tx = session.beginTransaction();
-            session.save(cart);
+            session.save(p);
             tx.commit();
         }catch (Exception e){
-
+            e.printStackTrace();
         }
+
     }
 
-    public List<Cart> getCartList(){
-        List<Cart> carts = null;
+
+    public List<User> getUsersList() {
         Transaction transaction = null;
-        try (Session session = this.sessionFactory.openSession()){
+        List<User> users = null;
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            TypedQuery<Cart> q = session.createQuery("SELECT c FROM Cart",Cart.class);
-            carts = q.getResultList();
+            TypedQuery<User> q = session.createQuery("SELECT u FROM User u", User.class);
+            users =  q.getResultList();
             transaction.commit();
-        }catch (Exception e){
-            transaction.rollback();
+
+        } catch (Exception e) {
+            if (transaction != null) {
+               // transaction.rollback();
+            }
         }
-        return carts;
+        return users;
     }
 
-    public Cart getCartById(long id){
-        Cart cart = null;
+    public User getById(long id) {
+        User user = null;
         Transaction transaction = null;
         try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            cart = session.get(Cart.class,id);
+            user = session.get(User.class,id);
             transaction.commit();
         }catch (Exception e){
 
         }
-        return cart;
+        return user;
     }
 
-    public void updateCategory(Cart cart) {
+    public void updateUser(User user) {
         Transaction transaction= null;
         try(Session session = this.sessionFactory.openSession()){
             transaction = session.beginTransaction();
-            session.saveOrUpdate(cart);
+            session.saveOrUpdate(user);
             transaction.commit();
         }catch (Exception e){
 
         }
+
     }
 
-    public void removeCart(long id){
-        Transaction transaction= null;
+    public void deleteUser(long id) {
+        Transaction transaction = null;
+        User user = null;
         try(Session session = this.sessionFactory.openSession()){
             transaction = session.beginTransaction();
-            session.delete(session.get(Cart.class,id));
+            user = session.get(User.class,id);
+            session.delete(user);
             transaction.commit();
         }catch (Exception e){
 
         }
     }
-
 }

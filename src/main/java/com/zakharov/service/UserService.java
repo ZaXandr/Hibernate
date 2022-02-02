@@ -1,7 +1,7 @@
-package org.example.service;
+package com.zakharov.service;
 
-import org.example.dao.UserDao;
-import org.example.dmo.User;
+import com.zakharov.dao.UserDao;
+import com.zakharov.dmo.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

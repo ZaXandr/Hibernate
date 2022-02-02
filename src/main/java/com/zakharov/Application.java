@@ -1,21 +1,14 @@
-package org.example;
+package com.zakharov;
 
-import org.example.dao.CategoryDao;
-import org.example.dao.CreditCardDao;
-import org.example.dao.ProductDao;
-import org.example.dao.UserDao;
-import org.example.dmo.Category;
-import org.example.dmo.CreditCard;
-import org.example.dmo.Product;
-import org.example.dmo.User;
-import org.example.service.ProductService;
-import org.example.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
+import com.zakharov.dao.CategoryDao;
+import com.zakharov.dmo.Category;
+import com.zakharov.dmo.Product;
+import com.zakharov.dmo.User;
+import com.zakharov.service.ProductService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 public class Application {
     public static void main(String[] args) {

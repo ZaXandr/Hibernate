@@ -1,6 +1,6 @@
-package org.example.dao;
+package com.zakharov.dao;
 
-import org.example.dmo.CreditCard;
+import com.zakharov.dmo.CreditCard;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

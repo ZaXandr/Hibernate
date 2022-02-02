@@ -1,7 +1,6 @@
-package org.example.dao;
+package com.zakharov.dao;
 
-import org.example.dmo.Category;
-import org.example.dmo.User;
+import com.zakharov.dmo.Category;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;

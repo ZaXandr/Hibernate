@@ -1,4 +1,4 @@
-package org.example.dmo;
+package com.zakharov.dmo;
 
 
 import com.sun.istack.NotNull;

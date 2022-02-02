@@ -1,4 +1,4 @@
-package org.example.config;
+package com.zakharov.config;
 
 
 import org.apache.tomcat.dbcp.dbcp2.BasicDataSource;
