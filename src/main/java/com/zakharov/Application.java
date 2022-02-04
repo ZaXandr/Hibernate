@@ -8,17 +8,16 @@ import com.zakharov.service.ProductService;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import java.util.Arrays;
 import java.util.List;
 
 public class Application {
     public static void main(String[] args) {
 
+        ApplicationContext context = new AnnotationConfigApplicationContext("com.zakharov");
 
-
-        ApplicationContext context = new AnnotationConfigApplicationContext("org.example");
         ProductService productService = context.getBean("productService", ProductService.class);
         CategoryDao categoryDao = context.getBean("categoryDao",CategoryDao.class);
-
 
         Category vegetable = getCategory("Vegetable");
         categoryDao.save(vegetable);
@@ -36,27 +35,27 @@ public class Application {
         productService.addProduct(apple);
         productService.addProduct(pear);
 
-        List<Product> products = productService.getProductList();
+        List<Product> products;
 
+        System.out.println("Existing products");
+        products = productService.getProductList();
         for (Product p: products) {
             System.out.println(p);
         }
 
-    }
+        System.out.println("Delete product with id 1");
+        productService.deleteProduct(1);
+        products = productService.getProductList();
+        for (Product p: products) {
+            System.out.println(p);
+        }
 
-    private static User getUser(String name, String surname) {
-        User user = new User();
-        user.setName(name);
-        user.setSurname(surname);
+        System.out.println("Update tomato price");
+        tomato.setPrice(22.22);
+        productService.updateProduct(tomato);
+        System.out.println(productService.getProductById(tomato.getId()));
 
-        return user;
-    }
 
-    private static Product getProduct(String name, double price) {
-        Product product = new Product();
-        product.setName(name);
-        product.setPrice(price);
-        return product;
     }
 
     private static Product getProduct(String name, double price,Category category) {
@@ -71,5 +70,4 @@ public class Application {
         category.setName(name);
         return category;
     }
-
 }

@@ -1,6 +1,7 @@
 package com.zakharov.dao;
 
 import com.zakharov.dmo.Product;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -20,50 +21,73 @@ public class ProductDao {
     }
 
     public void save(Product product) {
-        Session session = this.sessionFactory.openSession();
-        Transaction tx = session.beginTransaction();
-        session.persist(product);
-        tx.commit();
-        session.close();
+        Transaction transaction = null;
+        try (Session session = this.sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            session.persist(product);
+            transaction.commit();
+            session.close();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
     }
 
     public List<Product> getProductList() {
-        Session session = this.sessionFactory.openSession();
-        List<Product> lst = session.createQuery("select p from Product p").list();
-        session.close();
+        List<Product> lst = null;
+        Transaction transaction = null;
+        try (Session session = this.sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            lst = session.createQuery("select p from Product p").list();
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
         return lst;
     }
 
     public Product getProductById(long id) {
         Product product = null;
-        Session session = this.sessionFactory.openSession();
-        Transaction transaction = session.beginTransaction();
-        product = session.get(Product.class, id);
-        transaction.commit();
+        Transaction transaction = null;
+        try (Session session = this.sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
+            product = session.get(Product.class, id);
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
+        }
         return product;
     }
 
     public void deleteProduct(long id) {
         Transaction transaction = null;
-        Product product = null;
         try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            product = session.get(Product.class, id);
+            Product product = session.get(Product.class, id);
             session.delete(product);
             transaction.commit();
-        } catch (Exception e) {
-            transaction.rollback();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
     public void updateProduct(Product product) {
-        Transaction transaction= null;
-        try(Session session = this.sessionFactory.openSession()){
+        Transaction transaction = null;
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            session.saveOrUpdate(product);
+            session.update(product);
             transaction.commit();
-        }catch (Exception e){
-
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 

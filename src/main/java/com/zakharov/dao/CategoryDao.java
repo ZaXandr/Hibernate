@@ -20,61 +20,65 @@ public class CategoryDao {
     }
 
     public void save(Category category) {
-        try (Session session = this.sessionFactory.openSession()
-        ) {
-            Transaction tx = session.beginTransaction();
+        Transaction transaction = null;
+        try (Session session = this.sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
             session.save(category);
-            tx.commit();
-        }catch (Exception e){
-
+            transaction.commit();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 
-    public List<Category> getCategoryList(){
+    public List<Category> getCategoryList() {
         List<Category> categories = null;
         Transaction transaction = null;
-        try (Session session = this.sessionFactory.openSession()){
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            TypedQuery<Category> q = session.createQuery("SELECT c FROM Category c",Category.class);
+            TypedQuery<Category> q = session.createQuery("SELECT c FROM Category c", Category.class);
             categories = q.getResultList();
             transaction.commit();
-        }catch (Exception e){
-            transaction.rollback();
+        } catch (Exception e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
         return categories;
     }
 
-    public Category getCategoryById(long id){
-       Category category = null;
+    public Category getCategoryById(long id) {
+        Category category = null;
         Transaction transaction = null;
         try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            category = session.get(Category.class,id);
+            category = session.get(Category.class, id);
             transaction.commit();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
         return category;
     }
 
     public void updateCategory(Category category) {
-        Transaction transaction= null;
-        try(Session session = this.sessionFactory.openSession()){
+        Transaction transaction = null;
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.saveOrUpdate(category);
             transaction.commit();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }
 
-    public void removeCategory(long id){
-        Transaction transaction= null;
-        try(Session session = this.sessionFactory.openSession()){
+    public void removeCategory(long id) {
+        Transaction transaction = null;
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            session.delete(session.get(Category.class,id));
+            session.delete(session.get(Category.class, id));
             transaction.commit();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
     }

@@ -15,12 +15,13 @@ import java.util.Properties;
 @Configuration
 @EnableTransactionManagement
 public class HibernateConfig {
+
     @Bean
     public LocalSessionFactoryBean sessionFactory(){
         LocalSessionFactoryBean sessionFactory =
                 new LocalSessionFactoryBean();
         sessionFactory.setDataSource(dataSource());
-        sessionFactory.setPackagesToScan("org.example.dmo");
+        sessionFactory.setPackagesToScan("com.zakharov.dmo");
         sessionFactory.setHibernateProperties(hibernateProperties());
         return sessionFactory;
     }
@@ -36,13 +37,13 @@ public class HibernateConfig {
         return dataSource;
     }
 
-//    @Bean
-//    public PlatformTransactionManager hibernateTranscriptionManger(){
-//        HibernateTransactionManager transactionManager
-//                =new HibernateTransactionManager();
-//        transactionManager.setSessionFactory(sessionFactory().getObject());
-//        return transactionManager;
-//    }
+    @Bean
+    public PlatformTransactionManager hibernateTranscriptionManger(){
+        HibernateTransactionManager transactionManager
+                =new HibernateTransactionManager();
+        transactionManager.setSessionFactory(sessionFactory().getObject());
+        return transactionManager;
+    }
 
 
     private final Properties hibernateProperties(){

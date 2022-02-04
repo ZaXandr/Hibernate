@@ -1,6 +1,7 @@
 package com.zakharov.dao;
 
 import com.zakharov.dmo.User;
+import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
@@ -21,17 +22,18 @@ public class UserDao {
     }
 
     public void save(User p) {
-        try(Session session = this.sessionFactory.openSession()) {
-
-            Transaction tx = session.beginTransaction();
+        Transaction transaction = null;
+        try (Session session = this.sessionFactory.openSession()) {
+            transaction = session.beginTransaction();
             session.save(p);
-            tx.commit();
-        }catch (Exception e){
-            e.printStackTrace();
+            transaction.commit();
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
 
     }
-
 
     public List<User> getUsersList() {
         Transaction transaction = null;
@@ -39,12 +41,12 @@ public class UserDao {
         try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             TypedQuery<User> q = session.createQuery("SELECT u FROM User u", User.class);
-            users =  q.getResultList();
+            users = q.getResultList();
             transaction.commit();
 
-        } catch (Exception e) {
+        } catch (HibernateException e) {
             if (transaction != null) {
-               // transaction.rollback();
+                transaction.rollback();
             }
         }
         return users;
@@ -55,36 +57,38 @@ public class UserDao {
         Transaction transaction = null;
         try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            user = session.get(User.class,id);
+            user = session.get(User.class, id);
             transaction.commit();
-        }catch (Exception e){
-
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
         return user;
     }
 
     public void updateUser(User user) {
-        Transaction transaction= null;
-        try(Session session = this.sessionFactory.openSession()){
+        Transaction transaction = null;
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
             session.saveOrUpdate(user);
             transaction.commit();
-        }catch (Exception e){
+        } catch (HibernateException e) {
 
         }
-
     }
 
     public void deleteUser(long id) {
         Transaction transaction = null;
-        User user = null;
-        try(Session session = this.sessionFactory.openSession()){
+        try (Session session = this.sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            user = session.get(User.class,id);
+            User user = session.get(User.class, id);
             session.delete(user);
             transaction.commit();
-        }catch (Exception e){
-
+        } catch (HibernateException e) {
+            if (transaction != null) {
+                transaction.rollback();
+            }
         }
     }
 }
